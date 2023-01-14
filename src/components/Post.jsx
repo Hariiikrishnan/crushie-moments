@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Fab from "@mui/material/Fab";
@@ -6,6 +6,8 @@ import Fab from "@mui/material/Fab";
 import './stylesComponent.css'
 // import { styled } from '@mui/styles';
 import Slide from '@mui/material/Slide';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 function Post(props) {
   // console.log("big post clikced");
@@ -17,6 +19,7 @@ function Post(props) {
   // });
   // const classes=useStyles();
 
+  const [isLoading,setLoading]=useState(false);
 
   // console.log(props);
   const deleteButton ={
@@ -70,13 +73,23 @@ function Post(props) {
          
         <Fab
           onClick={() => {
+            setLoading(true);
             props.OnDelete(props.id);
+
             // handleDelete(id);
           }} style={deleteButton}
           className="deleteHeart"
-        >
+        >  
           <span class="material-symbols-outlined ">heart_minus</span>
-        </Fab>
+          { isLoading && <CircularProgress
+            size={68}
+            sx={{
+              position: 'absolute',
+              top: -6,
+              left: -6,
+              zIndex: 1,
+            }}  />  }
+             </Fab>
         </div>
       
     </div>

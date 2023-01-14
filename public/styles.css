@@ -22,6 +22,7 @@ body{
     margin: 0;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    font-size: medium;
 }
 #HeadContainer{
   position: relative;
@@ -82,18 +83,101 @@ form {
   /* .createArea label{
     padding-top:3%;
   } */
- .createArea label{
+  .create-form label{
   color: #02c4ff;
  }
-  .createArea input,label{
+  .create-form input,label{
     color:#C3F8FF;
     font-family: 'Ubuntu', sans-serif;
   }
-  .createArea input{
+  .create-form input{
     margin: 1% 1% 5% 1%;
     background-color: transparent;
     border: solid 3px transparent;
     border-bottom: dashed 3px rgba(197, 190, 190, 0.801);
+  }
+  .below-box{
+    text-align: center;
+    /* display: block;s */
+    /* float: left; */
+  }
+  .below-box p,a{
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 550;
+  }
+  .below-box a{
+    color:#02c4ff;
+    text-decoration: none;
+    /* margin: 20%!important; */
+  }
+  .loginInput input{
+    background-color: #d42d62;
+    /* border: solid 3px transparent; */
+    border-bottom: none;
+    padding: 2.5%;
+  }
+  .loginInput input:hover:first-child{
+   border-color: chartreuse;
+   /* border-bottom: solid  chartreuse;  */
+  }
+  .loginInput input:hover:last-child{
+    border-color: chartreuse;
+    border-top:none;
+    border-bottom: solid  chartreuse; 
+   }
+  .loginInput{
+    /* border-radius: 30px; */
+    margin-right: 4%;
+
+  }
+  .loginInput input:first-child{
+    margin-bottom: 0%;
+    /* border-bottom: solid #C3F8FF; */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  .loginInput input:last-child{
+    margin-top: 0%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  .forgotPassword{
+    /* color:#000 !important; */
+    /* margin: 20%!important; */
+  }
+  .below-box h2{
+    color:rgba(241,72,255,1);
+  }
+  .below-box button{
+    background-color: #0200ac;
+    font-size: 1rem;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+    /* padding:3%; */
+    width: 30%;
+    height: 2.6rem;
+  }
+  .below-box button:hover{
+    background-color:#fff ;
+    
+    color:#0200ac;
+    
+  }
+  .login {
+    margin: 10rem 0rem;
+  }
+  .register{
+    margin:5rem 0rem;
+  }
+  .forgotPassword{
+    color:#C3F8FF;
+   
+  }
+  .passwordError{
+    color:red;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 550;
   }
   .saveBtn button{
     margin-top: 8%;

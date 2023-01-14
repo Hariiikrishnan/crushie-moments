@@ -2,9 +2,14 @@
 require('dotenv').config();
 
 const express = require("express");
+const jwt = require("jsonwebtoken")
 const bodyparser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const session = require("express-session")
+const passport = require("passport");
+const passportlocalmongoose = require("passport-local-mongoose")
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const cors = require("cors");
@@ -13,38 +18,148 @@ const ObjectId = require("mongodb").ObjectId;
 
 // var db = "mongodb://localhost:27017/example";
 // mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.DBURL, {
+mongoose.connect(process.env.DBPORT, {
   useNewUrlParser: true,
 });
+//  console.log(new Date().toString());
+// DB SCHEMA
+const momentschema = new mongoose.Schema({
+ date: String ,
+  time : String,
+  place:String,
+  color:String,
+  saw:String,
+  response:String, 
+},{
+  timestamps: true 
+})
+const userschema = new mongoose.Schema({
+  email:String,
+  username:String,
+  password:String,
+})
+userschema.plugin(passportlocalmongoose);
+const Moment = new mongoose.model("Moment",momentschema);
+const User = new mongoose.model("User",userschema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(function(user,done){
+    done(null,user.id);
+})
+passport.deserializeUser(function(id,done){
+    User.findById(id,function(err,user){
+        done(err,user);
+    })
+})
 
 app.set("view engine","ejs");
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.static("public"));
-app.use(cors());
+app.use(cors({credentials:true,origin:"http://localhost:3000"}));
 app.use(express.json());
+app.use(session({
+  secret:process.env.SECRETKEY ,
+  resave:false,
+  saveUninitialized:false
+}));
+app.use(passport.session());
 
-const momentschema = new mongoose.Schema({
-  date: String,
-  time :String,
-  place:String,
-  color:String,
-  saw:String,
-  response:String
+app.post("/register",function(req,res){
+ 
+  User.register({username :req.body.username,email:req.body.email},req.body.password,function(err,user){
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+  }
+    else{
+        passport.authenticate("local")(req,res,function(){
+            res.send("Regsitered Successfully! Now go to Login page");
+        })
+    }
+})
+  // user.save( function (err){
+  //   if(err){
+  //   console.log(err)
+  // }else{
+  //   console.log("Saved Successfully")
+  // }
+});
+
+
+app.post("/login",function(req,res){
+  const email = req.body.email;
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const user = new User({
+    email:email,
+    username:username,
+    password:password ,
+  });
+
+  // console.log("tapped login route")
+ 
+  req.login(user,function(err){
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+  }
+    else{
+       
+        passport.authenticate("local")(req,res,function(){
+           jwt.sign({user},process.env.SECRETKEY,(err,token)=>{
+            //  console.log(token);
+            //  JSON.parse(localStorage.setItem(token));
+             res.json({token : token});
+             res.json({users:User});
+            //  res.cookie('jwt',token, { httpOnly: true, secure: true, maxAge: 3600000 })
+           });
+           
+            // res.redirect("/post");
+        })
+    }
+})
 })
 
-const Moment = new mongoose.model("Moment",momentschema);
+// Verify Token
+  function verifyToken(req,res,next){
+    console.log("called for jwt verification")
+    const bearerHeader = req.headers['authorization'];
+    console.log(bearerHeader);
+    if(typeof bearerHeader!=="undefined"){
+      const bearer = bearerHeader.split(" ");
+      const bearerToken = bearer[1];
+      req.token = bearerToken;
+      next();
+    }else{
+      res.sendStatus(403);
+    }
+  }
 
-app.get("/post",function(req,res){
+app.get("/post",verifyToken,function(req,res){
+
+  // console.log(req.headers)
+   jwt.verify(req.token,process.env.SECRETKEY,(err,authData)=>{
+    if(err){
+      res.sendStatus(403);
+    }else{
+      Moment.find({},function(err,results){
+        if(err){
+          console.log("Error Occured "+err);
+          window.alert(err);
+        }else if(results){
+          // console.log(results);
+          res.json({results})
+          // res.json({results,authData})
+        }
+      });
+    }
+   });
   
-    Moment.find({},function(err,results){
-      if(err){
-        console.log("Error Occured "+err);
-        window.alert(err);
-      }else if(results){
-        // console.log(results);
-        res.json(results)
-      }
-    })
+
 
   // res.render("home");
 });
@@ -56,7 +171,7 @@ app.get("/post",function(req,res){
 //     res.json(result)
 //   });
 // });
-app.post("/post",function(req,res){
+app.post("/post",verifyToken,function(req,res){
 
     // console.log(req.body);
    const date = req.body.date;
@@ -79,25 +194,39 @@ app.post("/post",function(req,res){
 
 // moment.save();
      moment.save(function(err,result){
-      if (err) throw err;
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+        return;
+    }
       res.send("Data Sent" + result);
     })
 })
-app.post("/edit/:postid",function(req,res){
+app.post("/edit/:postid",verifyToken,function(req,res){
   // console.log(req.body + "from Server side!");
   const id =req.params.postid;
   // console.log(req.params.postid);
   console.log(req.params.postid);
   Moment.findOneAndUpdate({_id:ObjectId(id)},req.body,
 		{ new: true, useFindAndModify: false },function(err,result){
-    if(err) throw err;
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+        return;
+    }
     res.json(result)
   })
 });
-app.delete("/post/:postid",function(req,res){
+
+
+app.delete("/post/:postid",verifyToken,function(req,res){
    console.log(req.params.postid + " server side");
   Moment.deleteOne({ _id:req.params.postid},function(err,message){
-    if(err) throw err;
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+  }
     res.json({message : "Moment Deleted Successfully!"});
   })
 });

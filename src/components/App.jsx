@@ -1,4 +1,4 @@
-import React, {useState,useEffect}  from "react";
+import React, {useState,useEffect,useContext}  from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import CreateArea from ".//CreateArea.jsx";
@@ -6,15 +6,20 @@ import Post from ".//Post.jsx"
 import HomeBtn from ".//HomeBtn.jsx"
 import ShortPost from ".//ShortPost.jsx"
 import Header from ".//Header.jsx"
+
 import Zoom from '@mui/material/Zoom';
 import { Update } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { BrowserRouter } from "react-router-dom";
+
 import axios from 'axios';
 import Slide from '@mui/material/Slide';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import SnackbarContent from '@mui/material/SnackbarContent';
+
+import {AuthContext} from "../login/Auth.jsx";
+
 
 function App(){
 
@@ -24,30 +29,7 @@ function App(){
     var balPost={};
  
     // const navigate = useNavigate();
-    const [posts,setPosts]=useState([
-    //     {
-    //     date:"2022-12-08",
-    //     time:"02:00",
-    //     place:"Trichy",
-    //     color:"Red",
-    //     saw:"No",
-    //     response:"Awkward"
-    // },{
-    //     date:"2020-12-08",
-    //     time:"04:00",
-    //     place:"Salem",
-    //     color:"yellow",
-    //     saw:"Yes",
-    //     response:"Shy"
-    // },{
-    //     date:"2018-12-08",
-    //     time:"06:00",
-    //     place:"Thanjavur",
-    //     color:"Blue",
-    //     saw:"No",
-    //     response:"Shy"
-    // }
-]);
+    const [posts,setPosts]=useState([]);
     // const [bigPost,setBigPost]=useState();
 
     const [isExpanded,setExpand]=useState(false);
@@ -57,9 +39,13 @@ function App(){
     const [transition, setTransition] = useState(undefined);
     const [startLoading,setLoading]=useState(true);
     const [openSnack,setSnack]=useState(false);
-    const [snackType,setSnackType]=useState("")
+    const [snackType,setSnackType]=useState("");
+
+    const [authState, ] = useContext(AuthContext);
+ 
   // const [removeHomeBtn,setRemoveBTn]=useState(false);
 
+    console.log(authState + " from App Component")
     function onAdd(newPost){
         // console.log("Req for Adding");
       
@@ -79,13 +65,7 @@ function App(){
             setSnack(false);
         },2000)       
     }
-    // function modifyingSnack(){
-    //     const message =
-    //     setSnack(true);
-    //     setInterval(()=>{
-    //         setSnack(false);
-    //     },2000) 
-    // }
+   
     function handleUpdateReturn(newPost){
 
              
@@ -128,13 +108,14 @@ function App(){
         const config ={
             headers : {
                 "Content-Type": "application/json",
+                "Authorization": "Bearer " + authState
             },
         };
         try{
             const res= await axios.get("/post",config);
-            console.log(res.data);
+            console.log(res.data.results);
             
-            setPosts(res.data);
+            setPosts(res.data.results);
             setLoading(false);
         }catch (err){
             console.error("error",err)
@@ -143,27 +124,7 @@ function App(){
     useEffect(()=>{
         getAllPosts();
     },[])
-    // async function onSubmit(e){
-    //     e.preventDefault();
-    //     const newMoment = {...posts}
-        
-        
-
-    //     await fetch("/post/add",{
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(newMoment),
-    //       })
-    //       .catch(error => {
-    //         window.alert(error);
-    //         return;
-    //       });
-    //     //   navigate()
-    // }
-//    console.log(posts);
-
+   
 
    function HomeBtnExpand(){
        setExpand(true); 
@@ -173,8 +134,14 @@ function App(){
     setEdit(false);
    }
    async function deletePost(id){
+    const config ={
+        headers : {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + authState
+        },
+    };
     // console.log(id);
-    await axios.delete(`/post/${id}`).then((res)=>{
+    await axios.delete(`/post/${id}`,config).then((res)=>{
         setPosts((prevPosts)=>{
             return prevPosts.filter((value,index)=>{
                 return value._id!==id;
@@ -208,13 +175,11 @@ function App(){
       
         
    }
-  
-//    console.log(currentPost);
-        
+          
     return <div>
         {/* <BrowserRouter> 
          <Routes> */}
-  
+
          <div class="HeadandLoad">
          {/* <Route exact path="/" element={<Header />} /> */}
          <Header /> 
@@ -228,16 +193,11 @@ function App(){
 
               <Snackbar
                     open={openSnack}
-                    // autoHideDuration={3000}
-                    // className="snackyBar"
-                    // message={"Moment "+ snackType }
-                    // action={action}
-                    // bodyStyle={{ backgroundColor: 'red', color: 'coral' }}
+                    
                   ><SnackbarContent style={{
                     backgroundColor:'white',
                     color:'black',
-                    // padding:'3%',
-                    // textAlign:"center"
+                   
                     display:"center",
                     alignItems:"center",
                     justifyContent:"center",
@@ -248,9 +208,7 @@ function App(){
     message={<span id="client-snackbar">Moment {snackType}</span>}
   /></Snackbar>
 
-            {/* {  <Route path="/post/add" element= { }
-           /> 
-           } */}
+ 
            { isExpanded  ?  <CreateArea 
           onAdd={onAdd} 
         //   onSubmit={onSubmit}
@@ -266,11 +224,13 @@ function App(){
             date={singlePost.date}
             time={singlePost.time}
             seenplace={singlePost.place}
+            createdAt={singlePost.createdAt}
+            updatedAt={singlePost.updatedAt}
 
             postClick={postExpand}
             
             />
-      }) : null}
+      }) : null }
 
       
           
@@ -327,9 +287,8 @@ function App(){
               })  : null  } 
         
 
-             
-      {/* </Routes> 
-     </BrowserRouter>  */}
+         
+    
     </div>
 }
 export default App;

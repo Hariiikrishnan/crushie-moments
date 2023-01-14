@@ -1,9 +1,13 @@
-import React,{useState} from "react";
+import React,{useState,useContext} from "react";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // import LoupeIcon from '@mui/icons-material/Loupe';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import Fab from '@mui/material/Fab';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import axios from 'axios';
+
+import {AuthContext} from "../login/Auth.jsx";
 
 function CreateArea(props){
     const [post,setPost]=useState({
@@ -15,52 +19,29 @@ function CreateArea(props){
         response:""
     });
     const [editPost,setEditPost]=useState();
+    const [isLoading,setLoading]=useState(false);
+
+    const [authState, ] = useContext(AuthContext);
 
  console.log(props);
 
   function handleForm(event){
     console.log("Handling Form")
       event.preventDefault();
-   
+      setLoading(true);
       props.isEdit ?  handleUpdate(props.id) : onSubmit(event); 
       
       
-      // props.onSubmit();
-      //   date:props.isEdit? editPost : props.date ,
-      //   time:props.isEdit? editPost : props.time,
-      //   place:props.isEdit? editPost : props.seenplace,
-      //   color:props.isEdit? editPost : props.dresscolor,
-      //   saw:props.isEdit? editPost : props.shesaw,
-      //   response:props.isEdit? editPost : props.reaction
-      // } :
-    
-    // setPost({
-    //   date:"",
-    //   time:"",
-    //   place:"",
-    //   color:"",
-    //   saw:"",
-    //   response:""
-    // })
+ 
   }
   async function onSubmit(e){
     // e.preventDefault();
     console.log("called");
    
-
-    // const {date,time,place,color,saw,response}=post;
-    // console.log(date);
-    //     const SingleNewMoment = {
-    //         date:date,
-    //         time:time,
-    //         place:place,
-    //         color:color,
-    //         saw:saw,
-    //         response:response
-    //     }
         const config ={
             headers : {
                 "Content-Type": "application/json",
+                "Authorization": "Bearer " + authState
             },
         };
             try{
@@ -75,11 +56,11 @@ function CreateArea(props){
                    response:""
                  });
                 //  window.location.reload();
-                props.onAdd(post);
+                setLoading(false);
             }catch (err){
                 console.error("error ",err.res.data)
             }
-
+            props.onAdd(post);
   }
   async function handleUpdate(id){
     // const id = .id;
@@ -87,6 +68,7 @@ function CreateArea(props){
     const config ={
       headers : {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + authState
       },
   };
       try{
@@ -102,11 +84,11 @@ function CreateArea(props){
         //   response:""
         // });
         // console.log(editPost);
-        props.onUpdate(editPost);
+       
         } catch (err){
           console.error("error ",err.res.data)
         }
-        
+        props.onUpdate(editPost);
    }
 
   function handleChange(event){
@@ -150,18 +132,29 @@ function CreateArea(props){
               }} ><ArrowBackIcon /></Fab></div>
             <label>Date and Time:</label>
 
-            <input onChange={props.isEdit ?handleEdit: handleChange} type="date" name="date" defaultValue={props.isEdit ? props.date : null } required={true} />
-            <input onChange={props.isEdit ?handleEdit: handleChange} type="time" name="time" defaultValue={props.isEdit ? props.time : null } required={true} />
+            <input onChange={props.isEdit ?handleEdit: handleChange} type="date" name="date" defaultValue={props.isEdit ? props.date : null } required={true} autoComplete="off"/>
+            <input onChange={props.isEdit ?handleEdit: handleChange} type="time" name="time" defaultValue={props.isEdit ? props.time : null } required={true} autoComplete="off"/>
             <label>Where did you Saw her?</label>
-            <input onChange={props.isEdit ?handleEdit: handleChange} name="place" placeholder="Place" defaultValue={props.isEdit ? props.seenplace : null } required={true} />
+            <input onChange={props.isEdit ?handleEdit: handleChange} name="place" placeholder="Place" defaultValue={props.isEdit ? props.seenplace : null } required={true} autoComplete="off"/>
             <label>Dress Color:</label>
-            <input onChange={props.isEdit ?handleEdit: handleChange} name="color" placeholder="Color" defaultValue={props.isEdit ? props.dresscolor : null } required={true} />
+            <input onChange={props.isEdit ?handleEdit: handleChange} name="color" placeholder="Color" defaultValue={props.isEdit ? props.dresscolor : null } required={true} autoComplete="off"/>
             <label>Did She Saw You?</label>
-            <input onChange={props.isEdit ?handleEdit: handleChange} name="saw" placeholder="Did she?" defaultValue={props.isEdit ? props.shesaw : null } required />
+            <input onChange={props.isEdit ?handleEdit: handleChange} name="saw" placeholder="Did she?" defaultValue={props.isEdit ? props.shesaw : null } required autoComplete="off"/>
             <label>How did i React?</label>
-            <input onChange={props.isEdit ?handleEdit: handleChange} name="response" placeholder="How?" defaultValue={props.isEdit ? props.reaction : null } required />
+            <input onChange={props.isEdit ?handleEdit: handleChange} name="response" placeholder="How?" defaultValue={props.isEdit ? props.reaction : null } required autoComplete="off"/>
             <div className="saveBtn">
-              <Fab onClick={handleForm} type="submit"><SaveAltIcon/></Fab>
+              <Fab onClick={handleForm} type="submit"><SaveAltIcon/>
+              { isLoading && <CircularProgress
+            size={68}
+            sx={{
+              position: 'absolute',
+              top: -6,
+              left: -6,
+              zIndex: 1,
+            }} 
+          /> }
+          </Fab> 
+              
             </div>
             
         </form>

@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
 
 
 function ShortPost(props){
     // console.log(props)
-    var months = [ "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December" ];
-    const currentTime=new Date().toLocaleTimeString()
-    const currentDate=new Date().getDate()
-    const currentMonth=new Date().getMonth()
+    // var months = [ "January", "February", "March", "April", "May", "June",
+    // "July", "August", "September", "October", "November", "December" ];
+    // const currentTime=Date.now.toLocaleTimeString
+    // const currentDate=Date.getDate
+    // const currentMonth=Date.getMonth
     // console.log(currentTime)    .toLocaleString("default", { month: "long" });
+    var timeStamp = props.createdAt;
 
+    
     return <div className="shortPost"  onClick={()=> {
         props.postClick(props.id)
       }}>
@@ -22,9 +24,10 @@ function ShortPost(props){
              </div>
               <h1>{props.seenplace}</h1>
               <div class="postFoot">
-              <p>{months[currentMonth]}</p>
-              <p>{currentDate}</p>
-             <p class="postTime">{currentTime}</p>
+              {/* <p>{months[currentMonth]}</p> */}
+              {/* <p>{props.createdAt.slice(0,10)}</p> */}
+              {/* <p>{TimeOff && timeStamp}</p> */}
+             {/* <p class="postTime">{currentTime}</p> */}
              </div>
     </div>
 }
