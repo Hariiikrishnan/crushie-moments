@@ -8,6 +8,7 @@ import Register from "./login/Register.jsx";
 import Auth from "./login/Auth.jsx";
 import LoginAuth from "./login/LoginAuth.jsx";
 import RegisterAuth from "./login/RegisterAuth.jsx";
+import CurrentUser from "./login/CurrentUser.jsx";
 // import {LoginAuth} from "./login/LoginAuth.jsx";
 
 import { useNavigate } from "react-router";
@@ -30,12 +31,14 @@ root.render(
     } /> */}
     <RegisterAuth>
     <LoginAuth>
+    <CurrentUser>
       <Auth>
        {/* <Login />   */}
       <WholeApp />
       {/* <Register /> */}
       </Auth>
-      </LoginAuth>
+    </CurrentUser>
+    </LoginAuth>
       </RegisterAuth>
     {/* </Routes>
     </BrowserRouter> */}

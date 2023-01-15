@@ -45,7 +45,7 @@ function App(){
  
   // const [removeHomeBtn,setRemoveBTn]=useState(false);
 
-    console.log(authState + " from App Component")
+    // console.log(authState + " from App Component")
     function onAdd(newPost){
         // console.log("Req for Adding");
       

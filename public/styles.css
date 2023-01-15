@@ -175,9 +175,9 @@ form {
    
   }
   .passwordError{
-    color:red;
+    color:black;
     font-family: 'Ubuntu', sans-serif;
-    font-weight: 550;
+    font-weight: 900;
   }
   .saveBtn button{
     margin-top: 8%;

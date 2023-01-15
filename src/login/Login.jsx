@@ -9,7 +9,7 @@ import Cookies from 'universal-cookie';
 import {AuthContext} from "./Auth.jsx"
 import {LoginContext} from "./LoginAuth.jsx"
 import {RegisterContext} from "./RegisterAuth.jsx"
-
+import {UserContext} from "./CurrentUser.jsx"
 
 // const cookies = new Cookies();
 
@@ -18,7 +18,12 @@ function Login(){
     const [authState,setAuthState] = useContext(AuthContext);
     const [isLoggedIn,setLoggedIn] = useContext(LoginContext);
     const [isRegistered,setRegisterState] = useContext(RegisterContext);
+    const [users,setUsers] = useState([]);
+
+
     const [startLoading,setLoading]=useState(false);
+    const [credentialsError,setCredentialsError]=useState(false);
+
 
     const [loginAccount,setLoginAccount]=useState({
         username:"",
@@ -36,7 +41,7 @@ function Login(){
           });
         
     }
-    function handleLogin(event){
+   async function handleLogin(event){
         
         // let user = JSON.parse(sessionStorage.getItem('data'));
         // const token = req.header('Authorization').replace('Bearer ', '')
@@ -45,7 +50,12 @@ function Login(){
         // console.log(user)
         setLoading(true);      
         event.preventDefault();
-
+        if(loginAccount.username === "" || loginAccount.password === ""){
+            setCredentialsError(true);
+           setInterval(()=>{
+            setLoading(false);
+           },500) 
+        }else{
        
         // console.log(loginAccount)
         const config ={
@@ -56,13 +66,30 @@ function Login(){
         };
         try{
             const body = JSON.stringify(loginAccount);
-            axios.post("/login",body,config).then((res)=>{
+           await axios.post("/login",body,config).then((res)=>{
+          
+    // setCurrentUser(finalUser);
+    //         setCurrentUser(res.data.users.filter((singleUser)=>{
+    //             return singleUser.username === loginAccount.username
+            
+    // }))
                 setLoggedIn(true)
+               console.log(res.data);
+                setUsers(res.data.users);
+
+                // setCurrentUser(res.data.users);
                 setAuthState(res.data.token);
                 // console.log(authState);
-                console.log(res.data.token);
-                console.log(res.data.users)
+                // console.log(res.data.token);
+                
+        console.log(users);
+//         console.log(res.data.users.filter((singleUser)=>{
+//             return singleUser.username === loginAccount.username
+        
+// }))
+                // console.log(res.data.users);
             })
+            
             //  window.location.reload();
             // console.log(JSON)
             console.log("Login Data Sent!!")
@@ -72,9 +99,9 @@ function Login(){
         }
         // setLoading(false);   
     }
+}
     
-    
-   console.log(startLoading);
+console.log(users);
   
 
     //  console.log("Outside Token " + authState)
@@ -88,7 +115,8 @@ function Login(){
             <input type="password " name="password" onChange={handleChange} placeholder="Password" autoComplete="off"/>
             </div>
             <div class="below-box">
-            <button type="submit" loading onClick={handleLogin}> { startLoading ? <i class="fa fa-circle-o-notch fa-spin" style={{fontSize:"24px",padding:"5%"}}></i> : "Submit" }</button>
+            {credentialsError ? <p class="below-box passwordError">Please Enter Credentials in all the Fields!</p> : null}
+            <button type="submit" onClick={handleLogin}> { startLoading ? <i class="fa fa-circle-o-notch fa-spin" style={{fontSize:"24px",padding:"5%"}}></i> : "Submit" }</button>
             <br></br>
             {/* <p>Already have an Account?</p> */}
             <a href="/" class="forgotPassword">Forgot Password?</a>

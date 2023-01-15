@@ -13,6 +13,7 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 const cors = require("cors");
+const { Construction } = require('@mui/icons-material');
 const PORT = process.env.PORT || 3001;
 const ObjectId = require("mongodb").ObjectId;
 
@@ -24,7 +25,7 @@ mongoose.connect(process.env.DBPORT, {
 //  console.log(new Date().toString());
 // DB SCHEMA
 const momentschema = new mongoose.Schema({
- date: String ,
+  date: String ,
   time : String,
   place:String,
   color:String,
@@ -66,7 +67,12 @@ app.use(session({
 app.use(passport.session());
 
 app.post("/register",function(req,res){
- 
+
+  var emailExist = User.find({email:req.body.email});
+      if(emailExist){
+        console.log("email Exist")
+        return res.status(400).json("Email already Exist!")
+      } 
   User.register({username :req.body.username,email:req.body.email},req.body.password,function(err,user){
     if (err) {
       console.log(err);
@@ -86,8 +92,10 @@ app.post("/register",function(req,res){
   //   console.log("Saved Successfully")
   // }
 });
+// app.get("/login",function(req,res){
+   
 
-
+// })
 app.post("/login",function(req,res){
   const email = req.body.email;
   const username = req.body.username;
@@ -108,13 +116,30 @@ app.post("/login",function(req,res){
       return;
   }
     else{
-       
+     
         passport.authenticate("local")(req,res,function(){
+
+          // User.find({},function(err,results){
+          //     if(err){
+          //       console.log(err)
+          //     }else{
+          //         res.json({users:results});
+          //   // console.log(results);
+          //     }
+          //    });
            jwt.sign({user},process.env.SECRETKEY,(err,token)=>{
             //  console.log(token);
             //  JSON.parse(localStorage.setItem(token));
-             res.json({token : token});
-             res.json({users:User});
+            User.find({},function(err,results){
+              if(err){
+                console.log(err)
+              }else{
+                  res.json({token : token,users:results});
+            // console.log(results);
+              }
+             });
+            //  res.json();
+            //  res.json({users:User});
             //  res.cookie('jwt',token, { httpOnly: true, secure: true, maxAge: 3600000 })
            });
            
