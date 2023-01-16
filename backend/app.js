@@ -19,12 +19,14 @@ const ObjectId = require("mongodb").ObjectId;
 
 // var db = "mongodb://localhost:27017/example";
 // mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.DBPORT, {
+mongoose.connect(process.env.DBURL, {
   useNewUrlParser: true,
 });
 //  console.log(new Date().toString());
 // DB SCHEMA
+var CurrentUser ;
 const momentschema = new mongoose.Schema({
+  username:String,
   date: String ,
   time : String,
   place:String,
@@ -66,13 +68,14 @@ app.use(session({
 }));
 app.use(passport.session());
 
+
 app.post("/register",function(req,res){
 
-  var emailExist = User.find({email:req.body.email});
-      if(emailExist){
-        console.log("email Exist")
-        return res.status(400).json("Email already Exist!")
-      } 
+  // var emailExist = User.find({email:req.body.email});
+  //     if(emailExist){
+  //       console.log("email Exist")
+  //       return res.status(400).json("Email already Exist!")
+  //     } 
   User.register({username :req.body.username,email:req.body.email},req.body.password,function(err,user){
     if (err) {
       console.log(err);
@@ -96,6 +99,7 @@ app.post("/register",function(req,res){
    
 
 // })
+
 app.post("/login",function(req,res){
   const email = req.body.email;
   const username = req.body.username;
@@ -106,7 +110,8 @@ app.post("/login",function(req,res){
     username:username,
     password:password ,
   });
-
+  CurrentUser = username;
+  
   // console.log("tapped login route")
  
   req.login(user,function(err){
@@ -151,9 +156,9 @@ app.post("/login",function(req,res){
 
 // Verify Token
   function verifyToken(req,res,next){
-    console.log("called for jwt verification")
+    // console.log("called for jwt verification")
     const bearerHeader = req.headers['authorization'];
-    console.log(bearerHeader);
+    // console.log(bearerHeader);
     if(typeof bearerHeader!=="undefined"){
       const bearer = bearerHeader.split(" ");
       const bearerToken = bearer[1];
@@ -167,11 +172,12 @@ app.post("/login",function(req,res){
 app.get("/post",verifyToken,function(req,res){
 
   // console.log(req.headers)
+  // console.log(CurrentUser);
    jwt.verify(req.token,process.env.SECRETKEY,(err,authData)=>{
     if(err){
       res.sendStatus(403);
     }else{
-      Moment.find({},function(err,results){
+      Moment.find({username:CurrentUser},function(err,results){
         if(err){
           console.log("Error Occured "+err);
           window.alert(err);
@@ -207,6 +213,7 @@ app.post("/post",verifyToken,function(req,res){
    const response = req.body.response;
  
   const moment = new Moment({
+    username:CurrentUser,
     date:date,
     time:time,
     place:place,

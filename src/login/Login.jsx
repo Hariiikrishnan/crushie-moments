@@ -18,7 +18,8 @@ function Login(){
     const [authState,setAuthState] = useContext(AuthContext);
     const [isLoggedIn,setLoggedIn] = useContext(LoginContext);
     const [isRegistered,setRegisterState] = useContext(RegisterContext);
-    const [users,setUsers] = useState([]);
+    const [isCurrentUser,setCurrentUser]=useContext(UserContext);
+    // const [users,setUsers] = useState([]);
 
 
     const [startLoading,setLoading]=useState(false);
@@ -74,15 +75,19 @@ function Login(){
             
     // }))
                 setLoggedIn(true)
-               console.log(res.data);
-                setUsers(res.data.users);
+            //    console.log(res.data);
+                // console.log(res.data.users);
 
                 // setCurrentUser(res.data.users);
+                setCurrentUser(res.data.users.filter((singleUser)=>{
+                 return singleUser.username === loginAccount.username
+                         }));
                 setAuthState(res.data.token);
                 // console.log(authState);
+                // console.log(isCurrentUser);
                 // console.log(res.data.token);
                 
-        console.log(users);
+                // console.log(users);
 //         console.log(res.data.users.filter((singleUser)=>{
 //             return singleUser.username === loginAccount.username
         
@@ -101,13 +106,14 @@ function Login(){
     }
 }
     
-console.log(users);
+// console.log(authState);
+// console.log(isCurrentUser);
   
 
     //  console.log("Outside Token " + authState)
    return <div class="login">
         <form class="create-form">
-            <h2 class="below-box">Hii, Had a good Day?</h2>
+            <h2 class="below-box">Hii, Had a good Day ?</h2>
             <div class="loginInput">
             {/* <label>Enter Username</label> */}
             <input type="text" name="username" onChange={handleChange} placeholder="Username" autoComplete="off"/>
@@ -116,16 +122,23 @@ console.log(users);
             </div>
             <div class="below-box">
             {credentialsError ? <p class="below-box passwordError">Please Enter Credentials in all the Fields!</p> : null}
-            <button type="submit" onClick={handleLogin}> { startLoading ? <i class="fa fa-circle-o-notch fa-spin" style={{fontSize:"24px",padding:"5%"}}></i> : "Submit" }</button>
+            <button type="submit" onClick={handleLogin} style={{marginBottom:"5%"}}>  { startLoading ? <i class="fa fa-circle-o-notch fa-spin" style={{fontSize:"24px",padding:"5%"}}></i> : "Login" }</button>
             <br></br>
             {/* <p>Already have an Account?</p> */}
             <a href="/" class="forgotPassword">Forgot Password?</a>
 
-            <p>Don't have an Account?</p>
+        
+
+           <div class="registerRedirect">
+           <p style={{float:"left"}}>Don't have an Account?</p>
             <a href="/" onClick={(e)=>{
                 e.preventDefault();
                 setRegisterState(true);
-            }}>Register now!</a>
+            }} style={{float:"left"}}>Register now!</a>
+           </div>
+            
+           
+           
             </div>
         </form>
    </div>

@@ -19,6 +19,8 @@ function Register(){
     const [passwordValue,setPasswordValue]=useState();
     const [confirmValue,setConfirmValue]=useState();
     const [credentialsError,setCredentialsError]=useState(false);
+    const [startLoading,setLoading]=useState(false);
+
 
     const [isLoggedIn,setLoggedIn] = useContext(LoginContext);
 
@@ -46,6 +48,7 @@ function Register(){
           });
     }
     function handleClick(event){
+        setLoading(true)
         event.preventDefault();
         if(userAccount.email==="" || userAccount.username==="" || userAccount.password ==="" || userAccount.confirmPassword===""){
             setCredentialsError(true);
@@ -109,7 +112,7 @@ function Register(){
     return <div class="register">
         <form class="create-form">
             <h2 class="below-box">Hello Annave!!</h2>
-            <h3 class="below-box">Create an Account Here.</h3>
+            <h2 class="below-box">Create an Account Here.</h2>
             <label>Enter Email Id</label>
             <input type="email " name="email" onChange={handleChange}  placeholder="Email-Id" autoComplete="off" required/>
             <label>Enter Username</label>
@@ -122,7 +125,7 @@ function Register(){
             {credentialsError ? <p class="below-box passwordError">Please Enter Credentials in all the Fields!</p> : null}
             {passwordValid ? <p class="below-box passwordError">Password doesn't Match! Please Check Again</p> : null}
             <div class="below-box">
-            <button type="submit" onClick={handleClick}>Submit</button>
+            <button type="submit" onClick={handleClick}>{ startLoading ? <i class="fa fa-circle-o-notch fa-spin" style={{fontSize:"24px",padding:"5%"}}></i> : "Register" }</button>
 
             {/* <p>Already have an Account?</p>
             <a href="/" onClick={(e)=>{

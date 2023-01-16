@@ -27,7 +27,7 @@ body{
 #HeadContainer{
   position: relative;
   margin:4%;
-  margin-bottom: 10%;
+  margin-bottom: 5%;
 }
 /* .HeadandLoad{
   display: flex;
@@ -57,6 +57,11 @@ body{
   top:10%;
   
   background-color: #EAFDFC;
+}
+.headUsername{
+  color:#EAFDFC;
+  font-family: 'Righteous', cursive;
+  font-weight: 300;
 }
 form {
     /* width: 40px; */
@@ -96,18 +101,21 @@ form {
     border: solid 3px transparent;
     border-bottom: dashed 3px rgba(197, 190, 190, 0.801);
   }
+  .create-form{
+    padding-bottom: 10%;
+  }
   .below-box{
     text-align: center;
-    /* display: block;s */
-    /* float: left; */
+    
   }
   .below-box p,a{
     font-family: 'Ubuntu', sans-serif;
     font-weight: 550;
   }
   .below-box a{
-    color:#02c4ff;
+    color:#C3F8FF;
     text-decoration: none;
+    /* font-weight: 550; */
     /* margin: 20%!important; */
   }
   .loginInput input{
@@ -141,10 +149,11 @@ form {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
   }
-  .forgotPassword{
-    /* color:#000 !important; */
-    /* margin: 20%!important; */
-  }
+  /* .forgotPassword{
+  
+    color:#0200ac;
+    font-weight: 700;
+  } */
   .below-box h2{
     color:rgba(241,72,255,1);
   }
@@ -170,10 +179,10 @@ form {
   .register{
     margin:5rem 0rem;
   }
-  .forgotPassword{
+  /* .forgotPassword{
     color:#C3F8FF;
    
-  }
+  } */
   .passwordError{
     color:black;
     font-family: 'Ubuntu', sans-serif;
@@ -319,6 +328,22 @@ form {
   .snackyBar{
     background-color: white;
   }
+   .registerRedirect{
+    margin:3% 37%;
+  } 
+
+  .create-form h2{
+    color:white;
+    font-family: 'Ubuntu', sans-serif;
+  }
+
+  .registerRedirect p{
+    margin:0% 2% 0% auto;
+  } 
+  .registerRedirect a{
+    color:#0200ac;
+    /* font-weight: 600; */
+  }
   /* .heartEdit{
     position: relative;
   }
@@ -342,9 +367,7 @@ form {
       font-size: medium;
      
     }
-    #HeadContainer{
-      margin-bottom: 14%;
-    }
+   
     .HomeBtn{
       margin-top: 100%;
     }
@@ -362,6 +385,16 @@ form {
      .loader{
       margin-left: 10rem;
      }
+     .registerRedirect{
+      margin:3% 0.2rem;
+    } 
+    .registerRedirect p{
+      margin:0% 6px 0% auto;
+      
+    } 
+    .registerRedirect p,a{
+      padding:3% 0%
+    }
   }
 
 

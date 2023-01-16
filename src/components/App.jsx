@@ -19,6 +19,8 @@ import Snackbar from '@mui/material/Snackbar';
 import SnackbarContent from '@mui/material/SnackbarContent';
 
 import {AuthContext} from "../login/Auth.jsx";
+import {UserContext} from "../login/CurrentUser.jsx";
+import {RegisterContext} from "../login/RegisterAuth.jsx";
 
 
 function App(){
@@ -41,11 +43,12 @@ function App(){
     const [openSnack,setSnack]=useState(false);
     const [snackType,setSnackType]=useState("");
 
-    const [authState, ] = useContext(AuthContext);
- 
+    const [authState,setAuthState] = useContext(AuthContext);
+    const [isCurrentUser,setCurrentUser] = useContext(UserContext);
   // const [removeHomeBtn,setRemoveBTn]=useState(false);
-
+    const [isRegistered,setRegisterState] = useContext(RegisterContext);
     // console.log(authState + " from App Component")
+    // console.log(isCurrentUser);
     function onAdd(newPost){
         // console.log("Req for Adding");
       
@@ -69,10 +72,10 @@ function App(){
     function handleUpdateReturn(newPost){
 
              
-            console.log(newPost);
-            console.log(clickedID);
+            // console.log(newPost);
+            // console.log(clickedID);
             unspreadedEditPost = posts.filter((singlePost,index)=>{
-                console.log(singlePost._id);
+                // console.log(singlePost._id);
             return singlePost._id===clickedID
           })
           balPost = posts.filter((singlePost,index)=>{
@@ -175,6 +178,7 @@ function App(){
       
         
    }
+   console.log(isCurrentUser[0].username);
           
     return <div>
         {/* <BrowserRouter> 
@@ -184,6 +188,7 @@ function App(){
          {/* <Route exact path="/" element={<Header />} /> */}
          <Header /> 
          { startLoading ? <CircularProgress className="loader" color="inherit" /> : null }
+         {/* <h2 class="below-box headUsername">Hello {isRegistered ? null : isCurrentUser[0].username}</h2> */}
          </div>
          {/* <Route path="/" element= /> */}
          { 
