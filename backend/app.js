@@ -59,7 +59,7 @@ passport.deserializeUser(function(id,done){
 app.set("view engine","ejs");
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.static("public"));
-app.use(cors({credentials:true,origin:"http://localhost:3000"}));
+app.use(cors({credentials:true,origin:"https://crushie-moments.netlify.app/"}));
 app.use(express.json());
 app.use(session({
   secret:process.env.SECRETKEY ,

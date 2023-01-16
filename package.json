@@ -52,5 +52,14 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hariiikrishnan/crushie-moments.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hariiikrishnan/crushie-moments/issues"
+  },
+  "homepage": "https://github.com/Hariiikrishnan/crushie-moments#readme"
 }
