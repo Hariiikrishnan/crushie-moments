@@ -178,7 +178,7 @@ function App(){
       
         
    }
-   console.log(isCurrentUser[0].username);
+//    console.log(isCurrentUser[0].username);
           
     return <div>
         {/* <BrowserRouter> 

@@ -76,6 +76,7 @@ app.post("/register",function(req,res){
   //       console.log("email Exist")
   //       return res.status(400).json("Email already Exist!")
   //     } 
+  CurrentUser = req.body.username;
   User.register({username :req.body.username,email:req.body.email},req.body.password,function(err,user){
     if (err) {
       console.log(err);
@@ -84,7 +85,11 @@ app.post("/register",function(req,res){
   }
     else{
         passport.authenticate("local")(req,res,function(){
-            res.send("Regsitered Successfully! Now go to Login page");
+          jwt.sign({user},process.env.SECRETKEY,(err,token)=>{
+
+              res.json({token : token});
+             });
+            // res.send("Regsitered Successfully! Now go to Login page");
         })
     }
 })

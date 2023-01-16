@@ -9,6 +9,7 @@ import axios from 'axios';
 
 import {LoginContext} from "./LoginAuth.jsx"
 
+import {AuthContext} from "./Auth.jsx"
 
 function Register(){
 
@@ -23,7 +24,7 @@ function Register(){
 
 
     const [isLoggedIn,setLoggedIn] = useContext(LoginContext);
-
+    const [authState,setAuthState] = useContext(AuthContext);
     // const [users,setUsers]=useState([]);
     const [userAccount,setRegister]=useState({
         email:"",
@@ -74,7 +75,10 @@ function Register(){
         };
         try{
             const body = JSON.stringify(userAccount);
-            await axios.post("/register",body,config);
+            await axios.post("/register",body,config).then((res)=>{
+                console.log(res.data);
+                setAuthState(res.data.token);
+            })
             setLoggedIn(true);
             //  window.location.reload();
             console.log("Data Sent!!")

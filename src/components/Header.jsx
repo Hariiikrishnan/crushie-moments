@@ -4,7 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 
 import {LoginContext} from "../login/LoginAuth.jsx"
-
+import {RegisterContext} from "../login/RegisterAuth.jsx";
 
 
 
@@ -12,7 +12,7 @@ function Header(){
 
      
     const [isLoggedIn,setLoggedIn] = useContext(LoginContext);
-
+    const [isRegistered,setRegisterState] = useContext(RegisterContext);
 
     return  <div id="HeadContainer">
     <div id="Heading">
@@ -21,6 +21,7 @@ function Header(){
     </div>
     <Fab onClick={()=>{
                 setLoggedIn(false);
+                setRegisterState(false);
               }} style={{background:"none",color:"white",boxShadow:"none",alignItems: "flex-start",justifyContent:"left"}} ><LogoutIcon/></Fab>
     </div> 
     
