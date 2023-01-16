@@ -29,6 +29,7 @@ root.render(
     <Route exact path="/" element={
       
     } /> */}
+    <h1>App Component</h1>
     <RegisterAuth>
     <LoginAuth>
     <CurrentUser>
