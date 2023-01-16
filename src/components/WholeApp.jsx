@@ -12,8 +12,8 @@ function WholeApp(){
 
     console.log(isLoggedIn);
     return (
-        <div><h1>Whole App component</h1></div>
-        // isLoggedIn ?  <App/> : isRegistered ? <Register/>  :  <Login/> 
+        // <div><h1>Whole App component</h1></div>
+        isLoggedIn ?  <App/> : isRegistered ? <Register/>  :  <Login/> 
     )
 }
 
