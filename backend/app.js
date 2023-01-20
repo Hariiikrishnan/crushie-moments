@@ -25,6 +25,8 @@ mongoose.connect(process.env.DBURL, {
 //  console.log(new Date().toString());
 // DB SCHEMA
 var CurrentUser ;
+ 
+  
 const momentschema = new mongoose.Schema({
   username:String,
   date: String ,
@@ -59,7 +61,8 @@ passport.deserializeUser(function(id,done){
 app.set("view engine","ejs");
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.static("public"));
-app.use(cors({credentials:true,origin:"https://crushie-moments.netlify.app/"}));
+// app.use(cors({credentials:true,origin:"https://crushie-moments.netlify.app/" || "http://localhost:3000"}));
+app.use(cors()); 
 app.use(express.json());
 app.use(session({
   secret:process.env.SECRETKEY ,
